@@ -6,20 +6,15 @@ import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { theme } from '@/src/theme';
-import { BackgroundGradient } from '@/components/ui/BackgroundGradient';
 
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1 }}>
-        {/* Living Background */}
-        <BackgroundGradient />
-        
-        {/* Content with Transparent Backgrounds */}
+      <View style={{ flex: 1, backgroundColor: theme.colors.paper.bg }}>
         <Stack
           screenOptions={{
             headerShown: false,
-            contentStyle: { backgroundColor: 'transparent' }, // Important!
+            contentStyle: { backgroundColor: theme.colors.paper.bg },
             animation: 'fade',
           }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -28,7 +23,7 @@ export default function RootLayout() {
             options={{ 
               presentation: 'modal',
               animation: 'slide_from_bottom',
-              contentStyle: { backgroundColor: 'transparent' } 
+              contentStyle: { backgroundColor: theme.colors.paper.bg }
             }} 
           />
           <Stack.Screen name="+not-found" />

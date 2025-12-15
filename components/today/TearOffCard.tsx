@@ -17,17 +17,19 @@ import Svg, { Path } from 'react-native-svg';
 // --- Configuration ---
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width - 40;
-const CARD_HEIGHT = 280; // Adjusted for our design
-const STRIP_HEIGHT = 50; // Height of the tear strip
-const TEAR_THRESHOLD = CARD_WIDTH * 0.4; // Drag distance to snap
+const CARD_HEIGHT = 280;
+const STRIP_HEIGHT = 50;
+const TEAR_THRESHOLD = CARD_WIDTH * 0.4;
+
+// Color constants using theme
+const COVER_COLOR = '#d4e1f1'; // Soft Blue (was Kraft paper)
+const STRIP_COLOR = '#ffb6c1'; // Light Pink (was darker kraft)
 
 // --- 1. Jagged Line Generator (SVG) ---
-// type: 'top' (teeth point up) | 'bottom' (teeth point down)
 const JaggedLine = ({ width, height, color, type }: { width: number; height: number; color: string; type: 'top' | 'bottom' }) => {
   const toothWidth = 10;
   const steps = Math.ceil(width / toothWidth);
   
-  // Starting point
   let d = `M0,${type === 'bottom' ? 0 : height}`;
   
   const yBase = type === 'bottom' ? 0 : height;
@@ -35,14 +37,11 @@ const JaggedLine = ({ width, height, color, type }: { width: number; height: num
   for (let i = 0; i < steps; i++) {
     const x = (i + 0.5) * toothWidth;
     const xNext = (i + 1) * toothWidth;
-    // If bottom: peak is at height (down), base at 0
-    // If top: peak is at 0 (up), base at height
     const yPeak = type === 'bottom' ? height : 0;
     
     d += ` L${x},${yPeak} L${xNext},${yBase}`;
   }
   
-  // Close the path
   d += ` L${width},${yBase} V${type === 'bottom' ? 0 : height} H0 Z`;
 
   return (
@@ -62,18 +61,16 @@ interface TearOffCardProps {
 export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
   const [isTorn, setIsTorn] = useState(false);
 
-  // Animation Values
   const translateX = useSharedValue(0);
   const stripOpacity = useSharedValue(1);
-  const coverGap = useSharedValue(0); // Gap between top/bottom covers after tear
-  const contextX = useSharedValue(0); // Context for gesture
+  const coverGap = useSharedValue(0);
+  const contextX = useSharedValue(0);
 
   const triggerHaptic = () => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   
   const handleTearComplete = () => {
     setIsTorn(true);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    // Separate the top and bottom covers to reveal content
     coverGap.value = withTiming(160, { duration: 600 });
     if (onTearComplete) onTearComplete();
   };
@@ -84,7 +81,6 @@ export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
       runOnJS(triggerHaptic)();
     })
     .onUpdate((event) => {
-      // Only allow dragging right
       const nextX = contextX.value + event.translationX;
       if (nextX > 0) {
         translateX.value = nextX;
@@ -92,13 +88,11 @@ export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
     })
     .onEnd(() => {
       if (translateX.value > TEAR_THRESHOLD) {
-        // Success: Fly off screen
         translateX.value = withTiming(CARD_WIDTH + 200, { duration: 300 });
         stripOpacity.value = withTiming(0, { duration: 200 }, (finished) => {
           if (finished) runOnJS(handleTearComplete)();
         });
       } else {
-        // Snap back
         translateX.value = withSpring(0);
       }
     });
@@ -106,18 +100,15 @@ export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
   const stripStyle = useAnimatedStyle(() => ({
     transform: [
       { translateX: translateX.value },
-      // Slight rotation for realism
       { rotateZ: `${interpolate(translateX.value, [0, CARD_WIDTH], [0, 5])}deg` }
     ],
     opacity: stripOpacity.value,
   }));
 
-  // Top Cover Animation (Moves Up)
   const topCoverStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: -coverGap.value }],
   }));
 
-  // Bottom Cover Animation (Moves Down)
   const bottomCoverStyle = useAnimatedStyle(() => ({
     transform: [{ translateY: coverGap.value }],
   }));
@@ -134,7 +125,7 @@ export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
   return (
     <GestureHandlerRootView style={styles.container}>
       
-      {/* === 1. Bottom Layer: The Secret Content (Data Driven) === */}
+      {/* === 1. Bottom Layer: The Secret Content === */}
       <View style={styles.cardBase}>
         <View style={styles.contentPadding}>
           <Text style={styles.category}>{getCategoryLabel(question.category)}</Text>
@@ -159,43 +150,38 @@ export function TearOffCard({ question, onTearComplete }: TearOffCardProps) {
         
         {/* Top Cover Half */}
         <Animated.View style={[styles.coverHalf, styles.coverTop, topCoverStyle]}>
-           <Text style={styles.coverTitle}>DAILY MOOD</Text>
+           <Text style={styles.coverTitle}>DAILY QUESTION</Text>
            <View style={{ position: 'absolute', bottom: 0 }}>
-             <JaggedLine width={CARD_WIDTH} height={6} color={theme.colors.glass.overlay} type="top" />
+             <JaggedLine width={CARD_WIDTH} height={6} color={COVER_COLOR} type="top" />
            </View>
         </Animated.View>
 
         {/* Bottom Cover Half */}
         <Animated.View style={[styles.coverHalf, styles.coverBottom, bottomCoverStyle]}>
            <View style={{ position: 'absolute', top: 0 }}>
-             <JaggedLine width={CARD_WIDTH} height={6} color={theme.colors.glass.overlay} type="bottom" />
+             <JaggedLine width={CARD_WIDTH} height={6} color={COVER_COLOR} type="bottom" />
            </View>
            <Text style={styles.coverSubtitle}>SEALED FOR YOU</Text>
         </Animated.View>
 
         {/* === 3. Middle: Zipper Strip === */}
-        {/* Only visible/interactive if not torn yet (or fading out) */}
         {!isTorn && (
           <View style={styles.stripWrapper}>
-            {/* Shadow gap behind the strip */}
             <View style={styles.stripShadowGap} />
             
             <GestureDetector gesture={panGesture}>
               <Animated.View style={[styles.stripContainer, stripStyle]}>
-                {/* Strip Body Background */}
                 <View style={styles.stripBody}>
                   <Text style={styles.stripText}>PULL TO OPEN ➔</Text>
                 </View>
 
-            {/* Top Teeth (to mask the gap above) */}
-            <View style={{ position: 'absolute', top: -6 }}>
-              <JaggedLine width={CARD_WIDTH + 40} height={6} color={theme.colors.glass.overlay} type="top" />
-            </View>
+                <View style={{ position: 'absolute', top: -6 }}>
+                  <JaggedLine width={CARD_WIDTH + 40} height={6} color={COVER_COLOR} type="top" />
+                </View>
 
-            {/* Bottom Teeth (to mask the gap below) */}
-            <View style={{ position: 'absolute', bottom: -6 }}>
-              <JaggedLine width={CARD_WIDTH + 40} height={6} color={theme.colors.glass.overlay} type="bottom" />
-            </View>
+                <View style={{ position: 'absolute', bottom: -6 }}>
+                  <JaggedLine width={CARD_WIDTH + 40} height={6} color={COVER_COLOR} type="bottom" />
+                </View>
               </Animated.View>
             </GestureDetector>
           </View>
@@ -216,20 +202,19 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     position: 'relative',
   },
-  // Base Card (Content)
   cardBase: {
     width: '100%',
     height: '100%',
-    backgroundColor: theme.colors.glass.card, // Frosted
-    borderRadius: 24, // Softer
-    shadowColor: theme.shadows.glass.shadowColor,
-    shadowOffset: theme.shadows.glass.shadowOffset,
-    shadowOpacity: theme.shadows.glass.shadowOpacity,
-    shadowRadius: theme.shadows.glass.shadowRadius,
+    backgroundColor: theme.colors.paper.bg,
+    borderRadius: 16,
+    shadowColor: theme.colors.marks.blueGrey,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
     elevation: 4,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: theme.colors.glass.border,
+    borderColor: 'rgba(212, 225, 241, 0.5)',
   },
   contentPadding: {
     flex: 1,
@@ -254,14 +239,14 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   actionButton: {
-    backgroundColor: theme.colors.ink.main,
+    backgroundColor: theme.colors.marks.terracotta,
     paddingVertical: 12,
     paddingHorizontal: 28,
     borderRadius: 30,
     zIndex: 20,
   },
   actionButtonText: {
-    color: theme.colors.paper.bg,
+    color: '#fff',
     fontFamily: theme.typography.sans,
     fontSize: 14,
     fontWeight: '600',
@@ -286,7 +271,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold' 
   },
 
-  // Cover Overlay
   coverOverlay: {
     position: 'absolute',
     width: CARD_WIDTH,
@@ -297,15 +281,13 @@ const styles = StyleSheet.create({
   coverHalf: {
     position: 'absolute',
     width: '100%',
-    backgroundColor: theme.colors.glass.overlay, // Vellum/Tracing Paper
+    backgroundColor: COVER_COLOR, // Soft Blue
     left: 0,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: theme.colors.glass.border,
   },
   coverTop: {
     top: 0,
-    height: (CARD_HEIGHT - STRIP_HEIGHT) / 2 + 1, // +1 to overlap slightly
+    height: (CARD_HEIGHT - STRIP_HEIGHT) / 2 + 1,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     justifyContent: 'flex-end',
@@ -321,19 +303,18 @@ const styles = StyleSheet.create({
   coverTitle: { 
     fontFamily: theme.typography.serif,
     fontSize: 16, 
-    color: '#A6A095', 
+    color: theme.colors.ink.secondary, 
     letterSpacing: 4, 
     fontWeight: '600' 
   },
   coverSubtitle: { 
     fontFamily: theme.typography.sans,
     fontSize: 10, 
-    color: '#B0AA9E', 
+    color: theme.colors.ink.secondary, 
     letterSpacing: 2, 
     marginTop: 10 
   },
 
-  // Zipper Strip
   stripWrapper: {
     height: STRIP_HEIGHT,
     width: CARD_WIDTH + 20,
@@ -345,9 +326,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: STRIP_HEIGHT - 10,
-    backgroundColor: 'rgba(0,0,0,0.1)',
+    backgroundColor: 'rgba(212, 225, 241, 0.3)',
     top: 5,
-    left: 10, // Adjust for the wider wrapper
+    left: 10,
   },
   stripContainer: {
     width: '100%',
@@ -356,19 +337,19 @@ const styles = StyleSheet.create({
   },
   stripBody: {
     width: '100%',
-    height: STRIP_HEIGHT - 12, // Minus teeth height
-    backgroundColor: 'rgba(255,255,255,0.9)', // Clean white strip
+    height: STRIP_HEIGHT - 12,
+    backgroundColor: STRIP_COLOR, // Light Pink
     justifyContent: 'center',
     alignItems: 'center',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: 'rgba(255,255,255,0.5)',
     borderStyle: 'dashed',
   },
   stripText: {
     fontFamily: theme.typography.sans,
     fontSize: 10,
-    color: '#8A8070',
+    color: '#fff',
     fontWeight: 'bold',
     letterSpacing: 2,
   }

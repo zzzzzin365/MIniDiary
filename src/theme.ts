@@ -1,46 +1,51 @@
 import { Platform } from 'react-native';
 
 /**
- * MindLog Design System — "Ethereal Dream"
- * Core Metaphor: Soft glass, breathing light, pastel dreams.
+ * MindLog Design System — "Soft Pastel"
+ * Color Palette: #fff5ee (Seashell), #ffb6c1 (Light Pink), #d4e1f1 (Soft Blue)
  */
 
 export const theme = {
   colors: {
     paper: {
-      bg: '#fff5ee', // Seashell (Base background behind glass)
-      cream: '#fffdf9',
-      pressed: 'rgba(255, 182, 193, 0.1)', // Light Pink touch
-    },
-    glass: {
-      card: 'rgba(255, 255, 255, 0.65)', // Frosted Glass
-      border: 'rgba(255, 255, 255, 0.9)', // Inner glow
-      overlay: 'rgba(255, 255, 255, 0.8)', // Vellum/Tracing paper
+      bg: '#fff5ee', // Seashell (Primary Background)
+      cream: '#fff5ee', // Same as bg for consistency
+      pressed: '#f5ebe5', // Slightly darker seashell for pressed state
     },
     ink: {
-      main: '#5E5E6E', // Muted Slate (Primary Text)
-      secondary: '#8E8E99', // Softer Slate
-      pencil: '#A0A0B0',
-      watermark: 'rgba(94, 94, 110, 0.2)',
+      // 文字颜色保持不变
+      main: '#2C3E50', // Dark Indigo (Journal Text / Inner Voice)
+      secondary: '#4A4A4A', // Faded Charcoal (Date Numbers)
+      pencil: '#555555', // Graphite Grey (General Schedule Text)
+      watermark: '#D1D1D6', // Very Light Grey (Lunar/Solar terms)
     },
     marks: {
-      sage: '#748B75', // Kept for legacy compatibility
-      terracotta: '#E89F71',
-      vermilion: '#ffb6c1', // Replaced Red with Light Pink for highlights
-      blueGrey: '#d4e1f1', // Light Periwinkle
-      pinkGlow: '#ffb6c1',
+      sage: '#d4e1f1', // Soft Blue (Schedule Dot)
+      terracotta: '#ffb6c1', // Light Pink (Diary/Reflection highlight)
+      vermilion: '#ffb6c1', // Light Pink (Today Circle / Active indicator)
+      blueGrey: '#d4e1f1', // Soft Blue (Timeline Ruling)
     },
     ui: {
-      cardstock: 'rgba(255, 255, 255, 0.75)', // Glass Tab Bar
-      washi: 'rgba(212, 225, 241, 0.5)', // Periwinkle Tape
+      cardstock: '#fff5ee', // Seashell (Bottom Tab Bar)
+      washi: 'rgba(255, 182, 193, 0.3)', // Light Pink transparent (Washi Tape)
     }
   },
   typography: {
+    /**
+     * Emotional / Inner Voice / Questions
+     * iOS: New York (Serif)
+     * Android: Serif
+     */
     serif: Platform.select({
       ios: 'Georgia',
       android: 'serif',
       web: "'Merriweather', 'Georgia', serif",
     }),
+    /**
+     * Functional / Schedule / Times
+     * iOS: System Sans
+     * Android: Sans
+     */
     sans: Platform.select({
       ios: 'System',
       android: 'sans-serif',
@@ -49,32 +54,32 @@ export const theme = {
   },
   shadows: {
     soft: {
-      shadowColor: '#d4e1f1', // Periwinkle shadow
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.2,
-      shadowRadius: 15,
-      elevation: 4,
-    },
-    glass: {
-      shadowColor: '#d4e1f1',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 12,
-      elevation: 4,
+      shadowColor: '#d4e1f1', // Soft Blue shadow
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.3,
+      shadowRadius: 8,
+      elevation: 2,
     },
     pressed: {
-      shadowColor: '#ffb6c1',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 1,
+      shadowColor: '#ffb6c1', // Light Pink
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.2,
+      shadowRadius: 1,
+      elevation: 0,
+    },
+    floating: {
+      shadowColor: '#d4e1f1', // Soft Blue
+      shadowOffset: { width: 4, height: 4 },
+      shadowOpacity: 0.25,
+      shadowRadius: 12,
+      elevation: 4,
     }
   },
   layout: {
     margin: 20,
     radius: {
-      card: 24, // Soft rounded
-      sheet: 32,
+      card: 12,
+      sheet: 24,
     }
   }
 } as const;
