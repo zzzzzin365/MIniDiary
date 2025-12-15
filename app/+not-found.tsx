@@ -1,15 +1,18 @@
-import { Link } from 'expo-router';
+import { Link, Stack } from 'expo-router';
 import { StyleSheet, View, Text } from 'react-native';
 import { theme } from '@/src/theme';
 
-export default function ModalScreen() {
+export default function NotFoundScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Write Your Reflection</Text>
-      <Link href="/" dismissTo style={styles.link}>
-        <Text style={styles.linkText}>Go back</Text>
-      </Link>
-    </View>
+    <>
+      <Stack.Screen options={{ title: 'Oops!' }} />
+      <View style={styles.container}>
+        <Text style={styles.title}>This screen doesn't exist.</Text>
+        <Link href="/" style={styles.link}>
+          <Text style={styles.linkText}>Go to home screen!</Text>
+        </Link>
+      </View>
+    </>
   );
 }
 
@@ -22,7 +25,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.paper.bg,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: theme.typography.serif,
     color: theme.colors.ink.main,
   },
@@ -36,3 +39,4 @@ const styles = StyleSheet.create({
     fontFamily: theme.typography.sans,
   },
 });
+

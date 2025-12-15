@@ -1,0 +1,381 @@
+{
+    "version": "1.0",
+    "questions": [
+      {
+        "id": "custom-001",
+        "text": "描述一个你认为很自由的画面",
+        "category": "self"
+      },
+      {
+        "id": "custom-002",
+        "text": "有什么恐惧症吗（巨物、深海）",
+        "category": "self"
+      },
+      {
+        "id": "custom-003",
+        "text": "你名字的寓意是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-004",
+        "text": "使用最多的软件是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-005",
+        "text": "所居住的城市给你的印象是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-006",
+        "text": "和恋人相处的理想状态",
+        "category": "self"
+      },
+      {
+        "id": "custom-007",
+        "text": "和朋友相处的理想状态",
+        "category": "self"
+      },
+      {
+        "id": "custom-008",
+        "text": "说说你所渴望发生的一个时刻",
+        "category": "self"
+      },
+      {
+        "id": "custom-009",
+        "text": "窗外天气怎么样",
+        "category": "self"
+      },
+      {
+        "id": "custom-010",
+        "text": "甜粽子 or 咸粽子",
+        "category": "self"
+      },
+      {
+        "id": "custom-011",
+        "text": "分享一个生活中温暖/美好的瞬间",
+        "category": "self"
+      },
+      {
+        "id": "custom-012",
+        "text": "三个意象描述自己",
+        "category": "self"
+      },
+      {
+        "id": "custom-013",
+        "text": "为现在努力的程度打个分数1-10",
+        "category": "self"
+      },
+      {
+        "id": "custom-014",
+        "text": "你认为人生的终极目标是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-015",
+        "text": "喝奶茶的甜度和冰度",
+        "category": "self"
+      },
+      {
+        "id": "custom-016",
+        "text": "描述一个让你感到舒适的空间",
+        "category": "self"
+      },
+      {
+        "id": "custom-017",
+        "text": "日出 or 日落更让你心动",
+        "category": "self"
+      },
+      {
+        "id": "custom-018",
+        "text": "现在几点啦",
+        "category": "self"
+      },
+      {
+        "id": "custom-019",
+        "text": "分享一段独特的经历吧",
+        "category": "self"
+      },
+      {
+        "id": "custom-020",
+        "text": "你能够很好的接受离别吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-021",
+        "text": "想好下一顿吃什么了吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-022",
+        "text": "描述一下你的理想型",
+        "category": "self"
+      },
+      {
+        "id": "custom-023",
+        "text": "相信爱会永存吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-024",
+        "text": "最希望收到的生日礼物是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-025",
+        "text": "现在心情如何",
+        "category": "self"
+      },
+      {
+        "id": "custom-026",
+        "text": "你的遗言想说点什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-027",
+        "text": "做过最冲动的事情",
+        "category": "self"
+      },
+      {
+        "id": "custom-028",
+        "text": "日久生情or 一见钟情",
+        "category": "self"
+      },
+      {
+        "id": "custom-029",
+        "text": "学生时代最快乐的三件事",
+        "category": "self"
+      },
+      {
+        "id": "custom-030",
+        "text": "你认为自己脑袋是由什么组成的",
+        "category": "self"
+      },
+      {
+        "id": "custom-031",
+        "text": "和过去的自己说几句话",
+        "category": "self"
+      },
+      {
+        "id": "custom-032",
+        "text": "有喜欢收集什么东西的习惯吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-033",
+        "text": "朋友对你来说的意义",
+        "category": "self"
+      },
+      {
+        "id": "custom-034",
+        "text": "把爱具象化描述成三件物品",
+        "category": "self"
+      },
+      {
+        "id": "custom-035",
+        "text": "最喜欢的三种食物原材料",
+        "category": "self"
+      },
+      {
+        "id": "custom-036",
+        "text": "夏夜看星星 or 冬日堆雪人",
+        "category": "self"
+      },
+      {
+        "id": "custom-037",
+        "text": "上一次笑是什么时候",
+        "category": "self"
+      },
+      {
+        "id": "custom-038",
+        "text": "你的MBTI 是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-039",
+        "text": "距离下一年还有几天",
+        "category": "self"
+      },
+      {
+        "id": "custom-040",
+        "text": "一部可以n刷的番/动漫",
+        "category": "self"
+      },
+      {
+        "id": "custom-041",
+        "text": "假如有一天你可以飞了，是因为？",
+        "category": "self"
+      },
+      {
+        "id": "custom-042",
+        "text": "元素五选一：金/木/水/火/风",
+        "category": "self"
+      },
+      {
+        "id": "custom-043",
+        "text": "现在饿吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-044",
+        "text": "让你印象最深刻的一个瞬间",
+        "category": "self"
+      },
+      {
+        "id": "custom-045",
+        "text": "如果可以，你想穿越到哪个年代",
+        "category": "self"
+      },
+      {
+        "id": "custom-046",
+        "text": "描述一下理想的被单样式",
+        "category": "self"
+      },
+      {
+        "id": "custom-047",
+        "text": "喜欢的三种颜色",
+        "category": "self"
+      },
+      {
+        "id": "custom-048",
+        "text": "分享一个社死经历吧",
+        "category": "self"
+      },
+      {
+        "id": "custom-049",
+        "text": "怕冷 or 怕热",
+        "category": "self"
+      },
+      {
+        "id": "custom-050",
+        "text": "你更会思考过去/当下/未来",
+        "category": "self"
+      },
+      {
+        "id": "custom-051",
+        "text": "形容一下你心中的完美晚餐",
+        "category": "self"
+      },
+      {
+        "id": "custom-052",
+        "text": "描述一个你做过的离奇的梦",
+        "category": "self"
+      },
+      {
+        "id": "custom-053",
+        "text": "形式主义 or 实用主义",
+        "category": "self"
+      },
+      {
+        "id": "custom-054",
+        "text": "可以查看任何一个事实，你选择？",
+        "category": "self"
+      },
+      {
+        "id": "custom-055",
+        "text": "你容易入睡吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-056",
+        "text": "如果当初_（自由发挥）",
+        "category": "self"
+      },
+      {
+        "id": "custom-057",
+        "text": "你认为的活着的意义",
+        "category": "self"
+      },
+      {
+        "id": "custom-058",
+        "text": "最喜欢的一种花",
+        "category": "self"
+      },
+      {
+        "id": "custom-059",
+        "text": "谈谈你的情感观",
+        "category": "self"
+      },
+      {
+        "id": "custom-060",
+        "text": "近期目标",
+        "category": "self"
+      },
+      {
+        "id": "custom-061",
+        "text": "能思考决不动笔 or 能动笔决不思考",
+        "category": "self"
+      },
+      {
+        "id": "custom-062",
+        "text": "你想活到几岁",
+        "category": "self"
+      },
+      {
+        "id": "custom-063",
+        "text": "一件愿意一直坚持下去的事情",
+        "category": "self"
+      },
+      {
+        "id": "custom-064",
+        "text": "最讨厌做的一类家务",
+        "category": "self"
+      },
+      {
+        "id": "custom-065",
+        "text": "二十四节气中最喜欢的一个",
+        "category": "self"
+      },
+      {
+        "id": "custom-066",
+        "text": "乐观 or 悲观主义者",
+        "category": "self"
+      },
+      {
+        "id": "custom-067",
+        "text": "想和谁一起跨年",
+        "category": "self"
+      },
+      {
+        "id": "custom-068",
+        "text": "向大家推荐几款好吃的小零食",
+        "category": "self"
+      },
+      {
+        "id": "custom-069",
+        "text": "有什么觉得很浪漫的事情吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-070",
+        "text": "喜欢听的音乐类型是什么",
+        "category": "self"
+      },
+      {
+        "id": "custom-071",
+        "text": "说说你最平常一天的作息",
+        "category": "self"
+      },
+      {
+        "id": "custom-072",
+        "text": "说出一个看完感触很深的电影",
+        "category": "self"
+      },
+      {
+        "id": "custom-073",
+        "text": "你的性取向是",
+        "category": "self"
+      },
+      {
+        "id": "custom-074",
+        "text": "有很挂念的人吗",
+        "category": "self"
+      },
+      {
+        "id": "custom-075",
+        "text": "对未来的规划是什么",
+        "category": "self"
+      }
+    ]
+  }
+  
