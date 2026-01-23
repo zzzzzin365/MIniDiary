@@ -43,6 +43,7 @@ export default function MineScreen() {
         Alert.alert('提示', result.message);
       }
     } catch (err) {
+      console.warn('Export failed:', err);
       Alert.alert('错误', '导出失败，请重试');
     } finally {
       setIsExporting(false);
@@ -207,7 +208,7 @@ function CustomToggle({
       damping: 15,
       stiffness: 120,
     });
-  }, [value]);
+  }, [value, progress]);
 
   const trackStyle = useAnimatedStyle(() => ({
     backgroundColor: interpolateColor(

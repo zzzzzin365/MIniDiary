@@ -3,7 +3,7 @@
  * Handles exporting calendar data to .ics files
  */
 
-import { File, Paths, Directory } from 'expo-file-system';
+import { File, Paths } from 'expo-file-system';
 import { shareAsync, isAvailableAsync } from 'expo-sharing';
 import { generateICSString, getICSFilename } from '../utils/icsGenerator';
 import { ScheduleEvent } from '../store/useMindLogStore';

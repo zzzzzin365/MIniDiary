@@ -1,6 +1,6 @@
 import { theme } from '@/src/theme';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Alert, ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -12,14 +12,10 @@ import { SystemCalendarEvent, useSystemCalendar } from '@/src/hooks/useSystemCal
 import {
   calculateReminderTrigger,
   cancelEventReminder,
-  requestNotificationPermissions,
   scheduleEventReminder,
 } from '@/src/services/notificationService';
 import { getDailyQuestions } from '@/src/services/questionService';
 import { ScheduleEvent, useMindLogStore } from '@/src/store/useMindLogStore';
-
-// Background image
-const backgroundImage = require('@/assets/images/today-bg.png');
 
 export default function TodayScreen() {
   const today = new Date().toISOString().split('T')[0];
@@ -33,12 +29,7 @@ export default function TodayScreen() {
   const setNotificationId = useMindLogStore((state) => state.setNotificationId);
 
   // System calendar
-  const { systemEvents, isSyncEnabled, getSystemEventsForDate } = useSystemCalendar();
-
-  // Request notification permissions on mount
-  useEffect(() => {
-    requestNotificationPermissions();
-  }, []);
+  const { isSyncEnabled, getSystemEventsForDate } = useSystemCalendar();
 
   // Today's local events
   const todayEvents = useMemo(() => {
@@ -138,11 +129,7 @@ export default function TodayScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ImageBackground 
-        source={backgroundImage} 
-        style={styles.backgroundImage}
-        resizeMode="cover"
-      >
+      <View style={styles.background}>
         <SafeAreaView style={styles.safeArea} edges={['top']}>
           <ScrollView 
             style={styles.container}
@@ -163,7 +150,7 @@ export default function TodayScreen() {
             <View style={styles.scheduleSection}>
               {/* Section Header */}
               <View style={styles.sectionHeader}>
-                <Text style={styles.sectionTitle}>Today's Focus</Text>
+                <Text style={styles.sectionTitle}>Today’s Focus</Text>
                 <Pressable style={styles.addButton} onPress={handleAddNew}>
                   <Text style={styles.addButtonText}>+</Text>
                 </Pressable>
@@ -220,7 +207,7 @@ export default function TodayScreen() {
             editingEvent={editingEvent}
           />
         </SafeAreaView>
-      </ImageBackground>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -259,10 +246,9 @@ function SystemEventItem({
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
+  background: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    backgroundColor: theme.colors.paper.bg,
   },
   safeArea: {
     flex: 1,

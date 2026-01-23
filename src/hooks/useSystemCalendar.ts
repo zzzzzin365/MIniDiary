@@ -3,9 +3,9 @@
  * Handles system calendar permissions, fetching, and state management
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import * as Calendar from 'expo-calendar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Calendar from 'expo-calendar';
+import { useCallback, useEffect, useState } from 'react';
 
 // System event interface (read-only, from device calendar)
 export interface SystemCalendarEvent {
@@ -33,89 +33,6 @@ export function useSystemCalendar() {
   const [systemEvents, setSystemEvents] = useState<SystemCalendarEvent[]>([]);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Load sync preference on mount
-  useEffect(() => {
-    loadSyncPreference();
-  }, []);
-
-  // Fetch events when sync is enabled
-  useEffect(() => {
-    if (isSyncEnabled && hasPermission) {
-      fetchSystemEvents();
-    } else if (!isSyncEnabled) {
-      setSystemEvents([]);
-    }
-  }, [isSyncEnabled, hasPermission]);
-
-  /**
-   * Load sync preference from storage
-   */
-  const loadSyncPreference = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(SYNC_ENABLED_KEY);
-      if (stored === 'true') {
-        // Check if we still have permission
-        const { status } = await Calendar.getCalendarPermissionsAsync();
-        if (status === 'granted') {
-          setHasPermission(true);
-          setIsSyncEnabled(true);
-        } else {
-          // Permission was revoked
-          await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'false');
-          setHasPermission(false);
-          setIsSyncEnabled(false);
-        }
-      }
-    } catch (err) {
-      console.error('Failed to load sync preference:', err);
-    }
-  };
-
-  /**
-   * Request calendar permissions
-   */
-  const requestPermission = async (): Promise<boolean> => {
-    try {
-      const { status } = await Calendar.requestCalendarPermissionsAsync();
-      const granted = status === 'granted';
-      setHasPermission(granted);
-      return granted;
-    } catch (err) {
-      console.error('Failed to request calendar permission:', err);
-      setError('无法请求日历权限');
-      return false;
-    }
-  };
-
-  /**
-   * Toggle sync on/off
-   */
-  const toggleSync = async (): Promise<boolean> => {
-    if (!isSyncEnabled) {
-      // Turning ON - request permission first
-      setIsLoading(true);
-      const granted = await requestPermission();
-      
-      if (granted) {
-        setIsSyncEnabled(true);
-        await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'true');
-        await fetchSystemEvents();
-        setIsLoading(false);
-        return true;
-      } else {
-        setError('需要日历权限才能同步');
-        setIsLoading(false);
-        return false;
-      }
-    } else {
-      // Turning OFF
-      setIsSyncEnabled(false);
-      setSystemEvents([]);
-      await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'false');
-      return true;
-    }
-  };
 
   /**
    * Fetch system calendar events for current month (±1 month range)
@@ -188,6 +105,89 @@ export function useSystemCalendar() {
       setIsLoading(false);
     }
   }, [hasPermission]);
+
+  // Load sync preference on mount
+  useEffect(() => {
+    loadSyncPreference();
+  }, []);
+
+  // Fetch events when sync is enabled
+  useEffect(() => {
+    if (isSyncEnabled && hasPermission) {
+      fetchSystemEvents();
+    } else if (!isSyncEnabled) {
+      setSystemEvents([]);
+    }
+  }, [isSyncEnabled, hasPermission, fetchSystemEvents]);
+
+  /**
+   * Load sync preference from storage
+   */
+  const loadSyncPreference = async () => {
+    try {
+      const stored = await AsyncStorage.getItem(SYNC_ENABLED_KEY);
+      if (stored === 'true') {
+        // Check if we still have permission
+        const { status } = await Calendar.getCalendarPermissionsAsync();
+        if (status === 'granted') {
+          setHasPermission(true);
+          setIsSyncEnabled(true);
+        } else {
+          // Permission was revoked
+          await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'false');
+          setHasPermission(false);
+          setIsSyncEnabled(false);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load sync preference:', err);
+    }
+  };
+
+  /**
+   * Request calendar permissions
+   */
+  const requestPermission = async (): Promise<boolean> => {
+    try {
+      const { status } = await Calendar.requestCalendarPermissionsAsync();
+      const granted = status === 'granted';
+      setHasPermission(granted);
+      return granted;
+    } catch (err) {
+      console.error('Failed to request calendar permission:', err);
+      setError('无法请求日历权限');
+      return false;
+    }
+  };
+
+  /**
+   * Toggle sync on/off
+   */
+  const toggleSync = async (): Promise<boolean> => {
+    if (!isSyncEnabled) {
+      // Turning ON - request permission first
+      setIsLoading(true);
+      const granted = await requestPermission();
+      
+      if (granted) {
+        setIsSyncEnabled(true);
+        await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'true');
+        await fetchSystemEvents();
+        setIsLoading(false);
+        return true;
+      } else {
+        setError('需要日历权限才能同步');
+        setIsLoading(false);
+        return false;
+      }
+    } else {
+      // Turning OFF
+      setIsSyncEnabled(false);
+      setSystemEvents([]);
+      await AsyncStorage.setItem(SYNC_ENABLED_KEY, 'false');
+      return true;
+    }
+  };
 
   /**
    * Get system events for a specific date

@@ -1,33 +1,26 @@
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
-// Configure notification behavior
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+let isNotificationsInitialized = false;
 
 /**
- * Request notification permissions
+ * One-time initialization for notifications behavior / channels.
+ * Call this as early as possible (e.g. in app root).
  */
-export async function requestNotificationPermissions(): Promise<boolean> {
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
+export async function initNotifications(): Promise<void> {
+  if (isNotificationsInitialized) return;
+  isNotificationsInitialized = true;
 
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== 'granted') {
-    console.log('Notification permission not granted');
-    return false;
-  }
+  // Configure notification behavior (foreground presentation)
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
 
   // Android needs a notification channel
   if (Platform.OS === 'android') {
@@ -37,6 +30,32 @@ export async function requestNotificationPermissions(): Promise<boolean> {
       vibrationPattern: [0, 250, 250, 250],
       lightColor: '#ffb6c1',
     });
+  }
+}
+
+/**
+ * Request notification permissions
+ */
+export async function requestNotificationPermissions(): Promise<boolean> {
+  await initNotifications();
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true,
+        allowBadge: false,
+        allowSound: true,
+      },
+    });
+    finalStatus = status;
+  }
+
+  if (finalStatus !== 'granted') {
+    console.log('Notification permission not granted');
+    return false;
   }
 
   return true;
@@ -55,6 +74,9 @@ export async function scheduleEventReminder(
   body: string,
   triggerDate: Date
 ): Promise<string | null> {
+  const hasPermission = await requestNotificationPermissions();
+  if (!hasPermission) return null;
+
   // Don't schedule if the trigger time is in the past
   if (triggerDate.getTime() <= Date.now()) {
     console.log('Cannot schedule notification in the past');
@@ -68,6 +90,7 @@ export async function scheduleEventReminder(
         body: body,
         data: { eventId },
         sound: 'default',
+        ...(Platform.OS === 'android' ? { channelId: 'schedule-reminders' } : null),
       },
       trigger: {
         type: Notifications.SchedulableTriggerInputTypes.DATE,
@@ -126,7 +149,9 @@ export function calculateReminderTrigger(
   const [hours, minutes] = time.split(':').map(Number);
   
   const eventDate = new Date(year, month - 1, day, hours, minutes);
-  const triggerDate = new Date(eventDate.getTime() - reminderMinutes * 60 * 1000);
+  // UI uses 1 to represent "准时" (at event start). Treat it as 0-minute offset.
+  const offsetMinutes = reminderMinutes === 1 ? 0 : reminderMinutes;
+  const triggerDate = new Date(eventDate.getTime() - offsetMinutes * 60 * 1000);
   
   return triggerDate;
 }
@@ -134,7 +159,7 @@ export function calculateReminderTrigger(
 // Reminder options for the UI
 export const REMINDER_OPTIONS = [
   { label: '无', value: 0 },
-  { label: '准时', value: 1 }, // 1 minute before (essentially "at time")
+  { label: '准时', value: 1 }, // value=1 but treated as 0-minute offset in calculateReminderTrigger()
   { label: '5分钟前', value: 5 },
   { label: '10分钟前', value: 10 },
   { label: '30分钟前', value: 30 },

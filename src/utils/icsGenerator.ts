@@ -9,6 +9,15 @@ import { ScheduleEvent } from '../store/useMindLogStore';
  * Format date to iCalendar DTSTART/DTEND format (YYYYMMDDTHHMMSS)
  */
 function formatICSDateTime(date: string, time: string): string {
+  if (!date || !time) {
+    // Fallback to current date/time if invalid
+    const now = new Date();
+    const fallbackDate = now.toISOString().split('T')[0];
+    const fallbackTime = '00:00';
+    const [year, month, day] = (date || fallbackDate).split('-');
+    const [hour, minute] = (time || fallbackTime).split(':');
+    return `${year}${month}${day}T${hour}${minute}00`;
+  }
   const [year, month, day] = date.split('-');
   const [hour, minute] = time.split(':');
   return `${year}${month}${day}T${hour}${minute}00`;
@@ -83,27 +92,32 @@ function getICSTimestamp(): string {
 function generateVEvent(event: ScheduleEvent): string {
   const lines: string[] = [];
   
+  // Ensure we have a valid date
+  const eventDate = event.date || new Date().toISOString().split('T')[0];
+  
   lines.push('BEGIN:VEVENT');
   lines.push(`UID:${generateUID(event.id)}`);
   lines.push(`DTSTAMP:${getICSTimestamp()}`);
   
   // Start time
-  if (event.startTime) {
-    lines.push(`DTSTART:${formatICSDateTime(event.date, event.startTime)}`);
+  if (event.startTime && event.startTime.includes(':')) {
+    lines.push(`DTSTART:${formatICSDateTime(eventDate, event.startTime)}`);
   } else {
     // All-day event
-    lines.push(`DTSTART;VALUE=DATE:${formatICSDate(event.date)}`);
+    lines.push(`DTSTART;VALUE=DATE:${formatICSDate(eventDate)}`);
   }
   
   // End time
-  if (event.endTime) {
-    lines.push(`DTEND:${formatICSDateTime(event.date, event.endTime)}`);
-  } else if (event.startTime) {
+  if (event.endTime && event.endTime.includes(':')) {
+    lines.push(`DTEND:${formatICSDateTime(eventDate, event.endTime)}`);
+  } else if (event.startTime && event.startTime.includes(':')) {
     // Default 1 hour duration
-    const [h, m] = event.startTime.split(':').map(Number);
+    const parts = event.startTime.split(':');
+    const h = Number(parts[0]) || 0;
+    const m = Number(parts[1]) || 0;
     const endH = String((h + 1) % 24).padStart(2, '0');
     const endM = String(m).padStart(2, '0');
-    lines.push(`DTEND:${formatICSDateTime(event.date, `${endH}:${endM}`)}`);
+    lines.push(`DTEND:${formatICSDateTime(eventDate, `${endH}:${endM}`)}`);
   }
   
   // Summary (Title)

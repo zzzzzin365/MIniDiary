@@ -6,8 +6,17 @@ import { StatusBar } from 'expo-status-bar';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { theme } from '@/src/theme';
+import { initNotifications, requestNotificationPermissions } from '@/src/services/notificationService';
 
 export default function RootLayout() {
+  React.useEffect(() => {
+    // Ensure notifications are initialized even if user never enters Today screen.
+    // In Expo Go (iOS), this is the most reliable place to request permission.
+    initNotifications().then(() => {
+      requestNotificationPermissions();
+    });
+  }, []);
+
   return (
     <SafeAreaProvider>
       <View style={{ flex: 1, backgroundColor: theme.colors.paper.bg }}>
