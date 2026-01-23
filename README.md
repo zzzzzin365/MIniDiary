@@ -47,47 +47,8 @@ MiniDiary 是一个基于 **React Native + Expo** 的现代跨端日历 / 记录
 
 ## ③ 软件架构图
 
-```mermaid
-flowchart TB
-  subgraph App[Presentation：路由 / 页面层（app/）]
-    Tabs[Tab Screens<br/>app/(tabs)/*]
-    Modal[Modal / NotFound<br/>app/modal.tsx + app/+not-found.tsx]
-  end
+![Uploading image.png…]()
 
-  subgraph UI[UI Components：组件层（components/）]
-    Today[components/today/*]
-    Schedule[components/schedule/*]
-  end
-
-  subgraph Domain[Domain：业务与基础能力层（src/）]
-    Store[State Store<br/>src/store/* (Zustand)]
-    Services[Services<br/>src/services/*]
-    Hooks[Hooks<br/>src/hooks/*]
-    Utils[Utils<br/>src/utils/*]
-    Types[Types & Constants<br/>src/types/* + src/constants/*]
-  end
-
-  subgraph Data[Assets / Data]
-    Questions[assets/data/questions.json]
-  end
-
-  Tabs --> Today
-  Tabs --> Schedule
-  Modal --> Today
-  Modal --> Schedule
-
-  Today <--> Store
-  Schedule <--> Store
-
-  Today --> Services
-  Schedule --> Services
-  Services --> Utils
-  Services --> Hooks
-  Services --> Types
-  Hooks --> Types
-  Utils --> Types
-  Services --> Questions
-```
 
 ## ④ 技术亮点及其实现原理
 
